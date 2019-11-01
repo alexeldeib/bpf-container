@@ -108,12 +108,12 @@ RUN mkdir /scripts && \
 
 
 # # push only necessary files into alpine:latest
-FROM ubuntu:bionic
+# FROM ubuntu:bionic
 
-COPY --from=build /lib/modules/ /lib/modules/
-COPY --from=build /srv/slim-linux/ /srv/linux/
-COPY --from=build /scripts /
-COPY --from=build /bpftrace/build-release/src/bpftrace /bin
-COPY --from=build /usr/local/share/bpftrace/tools/* /bin/
-ENV PATH $PATH:/bin
-CMD ["/bin/bpftrace"]
+# COPY --from=build /lib/modules/ /lib/modules/
+# COPY --from=build /srv/slim-linux/ /srv/linux/
+# COPY --from=build /scripts /
+# COPY --from=build /bpftrace/build-release/src/bpftrace /bin
+# COPY --from=build /usr/local/share/bpftrace/tools/* /bin/
+# ENV PATH $PATH:/bin
+# CMD ["/bin/bpftrace"]

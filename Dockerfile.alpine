@@ -70,7 +70,8 @@ RUN wget -qO- https://github.com/iovisor/bpftrace/archive/v$BPFTRACE_VERSION.tar
     STATIC_LINKING=ON RUN_TESTS=0 /bin/sh /bpftrace/docker/build.sh "/bpftrace/build-release" Release "$@" && \
     cd /bpftrace/build-release && \
     make && \
-    make install
+    make install && \
+    chmod +x /usr/local/share/bpftrace/tools/* 
 
 
 # prepare minimum kernel files to move into final image
