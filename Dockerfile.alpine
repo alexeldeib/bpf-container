@@ -1,47 +1,37 @@
-FROM ubuntu:bionic
+FROM alpine:3.8 as build 
 
-ARG LLVM_VERSION=9
-ENV LLVM_VERSION=$LLVM_VERSION
+LABEL repository="https://github.com/pjbgf/docker-images/"
+LABEL maintainer="pjbgf@linux.com"
+
+
+RUN apk add --update \
+  bison \
+  build-base \
+  clang-dev \
+  clang-static \
+  curl \
+  cmake \
+  elfutils-dev \
+  flex-dev \
+  linux-headers \
+  llvm5-dev \
+  llvm5-static \
+  python \
+  zlib-dev \
+  abuild \
+  bc \
+  git \
+  binutils \
+  gcc \
+  ncurses-dev \
+  openssl-dev
+
 
 ARG KERNEL_VERSION=5.0.21
 ARG KERNEL_RELEASE=5.0.0-32-generic
 ARG BCC_VERSION=0.8.0
 ARG BPFTRACE_VERSION=0.9.2
 
-RUN apt-get update && apt-get install -y curl gnupg &&\
-    llvmRepository="\n\
-deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main\n\
-deb-src http://apt.llvm.org/bionic/ llvm-toolchain-bionic main\n\
-deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${LLVM_VERSION} main\n\
-deb-src http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${LLVM_VERSION} main\n" &&\
-    echo $llvmRepository >> /etc/apt/sources.list && \
-    curl -L https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4052245BD4284CDD && \
-    echo "deb https://repo.iovisor.org/apt/bionic bionic main" | tee /etc/apt/sources.list.d/iovisor.list
-
-
-RUN apt-get update && apt-get install -y \
-      wget \
-      bison \
-      cmake \
-      flex \
-      g++ \
-      git \
-      libelf-dev \
-      zlib1g-dev \
-      libbcc \
-      clang-${LLVM_VERSION} \
-      libclang-${LLVM_VERSION}-dev \
-      libclang-common-${LLVM_VERSION}-dev \
-      libclang1-${LLVM_VERSION} \
-      llvm-${LLVM_VERSION} \
-      llvm-${LLVM_VERSION}-dev \
-      llvm-${LLVM_VERSION}-runtime \
-      libllvm${LLVM_VERSION} \
-      systemtap-sdt-dev \
-      python3 \ 
-      luajit \
-      luajit-5.1-dev
 
 # download and build kernel
 RUN MAJOR_VERSION=$(echo $KERNEL_VERSION | awk -F. '{ print $1 }') && \
@@ -55,6 +45,15 @@ RUN MAJOR_VERSION=$(echo $KERNEL_VERSION | awk -F. '{ print $1 }') && \
     make modules && \
     make modules_install && \
     make clean
+
+
+# put LLVM directories where CMake expects them to be
+RUN ln -sf /usr/lib/cmake/llvm5 /usr/lib/cmake/llvm && \
+    ln -sf /usr/include/llvm5/llvm /usr/include/llvm  && \
+    ln -sf /usr/include/llvm5/llvm-c /usr/include/llvm-c  && \
+# kernel modules will be sought after based on kernel release name
+    ln -sf /lib/modules/$KERNEL_VERSION /lib/modules/$KERNEL_RELEASE
+
 
 # download and build bcc
 RUN wget -qO- https://github.com/iovisor/bcc/archive/v$BCC_VERSION.tar.gz | tar -C / -xzf - && \
@@ -72,6 +71,7 @@ RUN wget -qO- https://github.com/iovisor/bpftrace/archive/v$BPFTRACE_VERSION.tar
     cd /bpftrace/build-release && \
     make && \
     make install
+
 
 # prepare minimum kernel files to move into final image
 RUN mkdir -p /srv/slim-linux/include/linux /srv/slim-linux/include/generated /srv/slim-linux/arch/x86/include/uapi/asm \
@@ -107,7 +107,7 @@ RUN mkdir /scripts && \
     chmod +x /scripts/init.sh
 
 
-# # push only necessary files into alpine:latest
+# push only necessary files into alpine:latest
 FROM ubuntu:bionic
 
 COPY --from=build /lib/modules/ /lib/modules/
