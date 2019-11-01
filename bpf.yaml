@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ace-bpf
+  name: ace-bpf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ace-bpf
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: ace-bpf
+    spec:
+      containers:
+      - image: alexeldeib/bpfalpine
+        command: ["sleep", "infinity"]
+        name: bpfalpine
+        resources: {}
+        securityContext:
+          privileged: true
+        
