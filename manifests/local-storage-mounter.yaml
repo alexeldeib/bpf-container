@@ -17,7 +17,7 @@ spec:
     spec:
       hostPID: true
       containers:
-      - image: alexeldeib/godisk:latest
+      - image: alexeldeib/godisk:2019.November.03.11.37.34.e5ec7cf
         command: ["bash", "start.sh"]
         name: ubuntu
         resources:
