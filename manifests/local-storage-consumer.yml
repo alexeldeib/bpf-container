@@ -20,7 +20,13 @@ spec:
       - image: ubuntu:bionic
         command: ["sleep", "infinity"]
         name: ubuntu
-        resources: {}
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 50Mi
         volumeMounts:
         - mountPath: /fast
           name: fast

@@ -20,7 +20,13 @@ spec:
       - image: alexeldeib/godisk:latest
         command: ["bash", "start.sh"]
         name: ubuntu
-        resources: {}
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 50Mi
         securityContext:
           privileged: true
         volumeMounts:
