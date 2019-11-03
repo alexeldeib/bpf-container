@@ -9,8 +9,8 @@ jobs:
       - uses: actions/checkout@master
       - name: build
         env:
-          DOCKER_USERNAME: ${{ .secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ .secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           set -eux
           TAG=$(date -Iseconds | sed -e 's/+/-/g')
