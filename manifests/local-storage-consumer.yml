@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: consumer
+  name: consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumer
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: consumer
+    spec:
+      hostPID: true
+      containers:
+      - image: ubuntu:bionic
+        command: ["sleep", "infinity"]
+        name: ubuntu
+        resources: {}
+        volumeMounts:
+        - mountPath: /fast
+          name: fast
+      volumes:
+      - name: fast
+        persistentVolumeClaim:
+          claimName: example-local-claim
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: example-local-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: fast-disks

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: local-mounter
+  name: local-mounter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: local-mounter
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: local-mounter
+    spec:
+      hostPID: true
+      containers:
+      - image: alexeldeib/godisk:latest
+        command: ["bash", "start.sh"]
+        name: ubuntu
+        resources: {}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /opt
+          name: opt
+      volumes:
+      - name: opt
+        hostPath:
+          path: /opt
