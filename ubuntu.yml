@@ -15,34 +15,35 @@ spec:
       labels:
         app: ssh
     spec:
-      # nodeSelector:
-      #   agentpool: bigger
+      hostPID: true
       containers:
       - image: alexeldeib/godisk:latest
-        command: ["sleep", "infinity"]
+        command: ["bash", "start.sh"]
         name: ubuntu
         resources: {}
         securityContext:
           privileged: true
         volumeMounts:
-        - mountPath: /proc
-          name: proc
-        - mountPath: /sys
-          name: sys
-        - mountPath: /mnt/hostMount
-          name: host
+        - mountPath: /opt
+          name: opt
+        # - mountPath: /dev
+        #   name: dev
+        #   mountPropagation: Bidirectional
+        # - mountPath: /mnt
+        #   name: mnt
+        #   mountPropagation: Bidirectional
         # - mountPath: /mnt/fast
         #   name: fast
       volumes:
-      - name: proc
+      - name: opt
         hostPath:
-          path: /proc
-      - name: sys
-        hostPath:
-          path: /sys
-      - name: host
-        hostPath:
-          path: /
+          path: /opt
+      # - name: dev
+      #   hostPath:
+      #     path: /dev
+      # - name: mnt
+      #   hostPath:
+      #     path: /mnt
       # - name: fast
       #   persistentVolumeClaim:
       #     claimName: example-local-claim

@@ -10,7 +10,7 @@ spec:
   persistentVolumeReclaimPolicy: "Retain"
   storageClassName: "fast-disks"
   local:
-    path: "/mnt/disks/nvme0"
+    path: "/mnt/disks/nvme0n1"
   nodeAffinity:
     required:
       nodeSelectorTerms:

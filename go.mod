@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/jaypipes/ghw v0.0.0-20190821154021-743802778342
-	github.com/prometheus/common v0.7.0
+	github.com/prometheus/common v0.7.0 // indirect
 	github.com/sanity-io/litter v1.2.0
 	k8s.io/kubernetes v1.18.0-alpha.0
 )
