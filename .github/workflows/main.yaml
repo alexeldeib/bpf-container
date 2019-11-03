@@ -13,7 +13,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           set -eux
-          TAG="$(date +%Y.%B.%d.%H.%M.%S.)$(git rev-parse --short=6 HEAD)"
+          TAG="$(date +%Y.%B.%d.%H.%M.%S.)$(git rev-parse --short HEAD)"
           docker build . -t alexeldeib/godisk:$TAG
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push alexeldeib/godisk:$TAG
