@@ -15,6 +15,19 @@ spec:
       labels:
         app: ace-bpf
     spec:
+      nodeSelector:
+        node-role.kubernetes.io/master: ''
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          operator: "Exists"
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #         matchExpressions:
+      #         - key: node-role.kubernetes.io/master
+      #           operator: Exists
+      #           values: ["master"]
       containers:
       - image: alexeldeib/bpfalpine
         command: ["sleep", "infinity"]
@@ -22,4 +35,19 @@ spec:
         resources: {}
         securityContext:
           privileged: true
-        
+        volumeMounts:
+        - mountPath: /proc
+          name: proc
+        - mountPath: /sys
+          name: sys
+      volumes:
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: proc
+        hostPath:
+          path: /proc
+      
