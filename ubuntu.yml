@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ssh
+  name: ssh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ssh
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: ssh
+    spec:
+      # nodeSelector:
+      #   agentpool: bigger
+      containers:
+      - image: alexeldeib/godisk:latest
+        command: ["sleep", "infinity"]
+        name: ubuntu
+        resources: {}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /proc
+          name: proc
+        - mountPath: /sys
+          name: sys
+        - mountPath: /mnt/hostMount
+          name: host
+        # - mountPath: /mnt/fast
+        #   name: fast
+      volumes:
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: host
+        hostPath:
+          path: /
+      # - name: fast
+      #   persistentVolumeClaim:
+      #     claimName: example-local-claim
+# ---
+# kind: PersistentVolumeClaim
+# apiVersion: v1
+# metadata:
+#   name: example-local-claim
+# spec:
+#   accessModes:
+#   - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 5Gi
+#   storageClassName: fast-disks
