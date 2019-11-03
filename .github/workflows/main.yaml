@@ -1,0 +1,19 @@
+name: build job
+on: [push]
+
+jobs:
+  build_manager:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: build
+        env:
+          DOCKER_USERNAME: ${{ .secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ .secrets.DOCKER_PASSWORD }}
+        run: |
+          set -eux
+          TAG=$(date -Iseconds | sed -e 's/+/-/g')
+          docker build . -t alexeldeib/godisk:$TAG
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker push alexeldeib/godisk:$TAG

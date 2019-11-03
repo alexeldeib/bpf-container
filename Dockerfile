@@ -5,10 +5,9 @@ WORKDIR /bpf
 
 ADD go.mod .
 ADD go.sum .
-ADD vendor vendor
 ADD main.go .
 ADD start.sh .
 
 RUN chmod +x start.sh
 
-RUN go build -mod vendor -o bpf .
+RUN go build -o bpf .
